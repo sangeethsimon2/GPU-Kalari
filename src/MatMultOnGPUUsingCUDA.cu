@@ -1,5 +1,5 @@
 #include <iostream>
-#include "matOperOnGpu.cuh"
+#include "MatMultOnGPUUsingCUDA.cuh"
 
 void printCudaVersionNumber(){
 

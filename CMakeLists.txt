@@ -7,11 +7,15 @@ project(
     )
 
 #Set CXX version and make it required
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 #Set output directory
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
+
+find_package(CUDA  REQUIRED)
+include_directories("${CUDA_INCLUDE_DIRS}")
+set(CMAKE_CUDA_ARCHITECTURES "50;72")
 
 add_subdirectory(src)
 add_subdirectory(app)
