@@ -42,7 +42,7 @@ int main(int argc, char** argv){
     //P.showMatrix();
 
     hostTimer.stopClock();
-    std::cout<<"The elapsed time for CPU computation is: "<<timer.getTime()<<std::endl;
+    std::cout<<"The elapsed time for CPU computation is: "<<hostTimer.elapsedTime()<<std::endl;
 
     //CUDA computations
     // Declare empty matrices that will be used on the device to recieve

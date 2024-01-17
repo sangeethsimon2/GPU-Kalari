@@ -3,7 +3,7 @@
 #ifndef GPUTIMER_H_
 #define GPUTIMER_H_
 
-#include "cuda_runtime.h"
+#include <cuda_runtime.h>
 
 class gpuTimer{
  public:
