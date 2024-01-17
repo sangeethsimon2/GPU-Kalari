@@ -9,6 +9,7 @@
 int main(int argc, char** argv){
 
     hostTimer hostTimer;
+    gpuTimer gpuTimer;
 
     printCudaVersionNumber();
 
@@ -58,9 +59,15 @@ int main(int argc, char** argv){
     uploadToDevice(M.getSizeInBytesOfMatrixElements(), M.getMatrixElements().data(), Md.getMatrixElements().data());
     uploadToDevice(N.getSizeInBytesOfMatrixElements(), N.getMatrixElements().data(), Nd.getMatrixElements().data());
 
+    gpuTimer.startClock();
+
     matrixMultiplyOnDevice(Md.getMatrixElements().data(), Nd.getMatrixElements().data(), Pd.getMatrixElements().data(), Md.getNumberOfElementsInMatrix());
+
+    gpuTimer.stopClock();
+
     downloadToHost(P.getSizeInBytesOfMatrixElements(), Pd.getMatrixElements().data(), P.getMatrixElements().data());
 
+    std::cout<<"The elapsed time for GPU computation is: "<<gpuTimer.elapsedTime()<<std::endl;
 
     return(0);
 
