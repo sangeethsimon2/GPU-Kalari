@@ -6,6 +6,8 @@
 #include "MatrixBase.hpp"
 #include "MatMultOnGPUUsingCUDA.cuh"
 
+
+
 int main(int argc, char** argv){
 
     hostTimer hostTimer;
@@ -45,6 +47,7 @@ int main(int argc, char** argv){
     hostTimer.stopClock();
     std::cout<<"The elapsed time for CPU computation is: "<<hostTimer.elapsedTime()<<std::endl;
 
+    #ifdef ENABLE_CUDA
     //CUDA computations
     // Declare empty matrices that will be used on the device to recieve
     // matrices from CPU (Md, Nd) and send back the computed matrix (Pd) to CPU
@@ -68,6 +71,7 @@ int main(int argc, char** argv){
     downloadToHost(P.getSizeInBytesOfMatrixElements(), Pd.getMatrixElements().data(), P.getMatrixElements().data());
 
     std::cout<<"The elapsed time for GPU computation is: "<<gpuTimer.elapsedTime()<<std::endl;
+    #endif
 
     return(0);
 
