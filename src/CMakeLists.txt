@@ -2,7 +2,6 @@ include(CMakePrintHelpers)
 message(PROJECT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 #cmake_print_variables(PROJECT_SOURCE_DIR)
 
-option(ENABLE_CUDA "ENABLE_CUDA" ON)
 
 set(HEADER_LIST "${PROJECT_SOURCE_DIR}/include/hostTimer.hpp")
 add_library(hostTimer hostTimer.cpp ${HEADER_LIST})

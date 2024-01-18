@@ -37,6 +37,7 @@ int main(int argc, char** argv){
     matrix P(std::atoi(argv[1]),std::atoi(argv[2]));
     std::cout<<"Finished allocating the matrices\n";
 
+    #ifdef ENABLE_SERIAL
     std::cout<<" Performing matrix mult on the cpu cores\n";
 
     hostTimer.startClock();
@@ -46,6 +47,7 @@ int main(int argc, char** argv){
 
     hostTimer.stopClock();
     std::cout<<"The elapsed time for CPU computation is: "<<hostTimer.elapsedTime()<<std::endl;
+    #endif
 
     #ifdef ENABLE_CUDA
     //CUDA computations
