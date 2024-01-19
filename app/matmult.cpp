@@ -70,6 +70,8 @@ int main(int argc, char** argv){
 
     gpuTimer.stopClock();
 
+    cudaDeviceSynchronize();
+
     downloadToHost(P.getSizeInBytesOfMatrixElements(), Pd.getMatrixElements().data(), P.getMatrixElements().data());
 
     std::cout<<"The elapsed time for GPU computation is: "<<gpuTimer.elapsedTime()<<std::endl;
