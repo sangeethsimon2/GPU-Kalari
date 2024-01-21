@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.23)
 
 project(
     matrixMultiplication
@@ -14,12 +14,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 
 option(ENABLE_SERIAL "ENABLE_SERIAL" OFF)
-option(ENABLE_CUDA "ENABLE_CUDA" OFF)
+option(ENABLE_CUDA "ENABLE_CUDA" ON)
 
 if (ENABLE_CUDA)
+  #enable_language(CUDA)
   find_package(CUDA  REQUIRED)
   include_directories("${CUDA_INCLUDE_DIRS}")
-  set(CMAKE_CUDA_ARCHITECTURES "50;72")
+  set(CMAKE_CUDA_ARCHITECTURES "70;72")
+  set(CMAKE_CUDA_STANDARD 17)
 endif()
 
 add_subdirectory(src)
