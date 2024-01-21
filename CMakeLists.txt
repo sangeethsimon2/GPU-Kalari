@@ -17,7 +17,6 @@ option(ENABLE_SERIAL "ENABLE_SERIAL" OFF)
 option(ENABLE_CUDA "ENABLE_CUDA" ON)
 
 if (ENABLE_CUDA)
-  #enable_language(CUDA)
   find_package(CUDA  REQUIRED)
   include_directories("${CUDA_INCLUDE_DIRS}")
   set(CMAKE_CUDA_ARCHITECTURES "70;72")
