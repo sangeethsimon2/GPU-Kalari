@@ -1,6 +1,6 @@
 #include<iostream>
 #include<cstdlib>
-
+#include<cassert>
 #include "hostTimer.hpp"
 #include "gpuTimer.hpp"
 #include "MatrixBase.hpp"
@@ -35,6 +35,11 @@ int main(int argc, char** argv){
 
     //solution matrix
     matrix P(std::atoi(argv[1]),std::atoi(argv[2]));
+    P.initializeMatrixToZero();
+
+    assert(M.getSizeInBytesOfMatrixElements()==N.getSizeInBytesOfMatrixElements());
+    assert(P.getSizeInBytesOfMatrixElements()==M.getSizeInBytesOfMatrixElements());
+
     std::cout<<"Finished allocating the matrices\n";
 
     #ifdef ENABLE_SERIAL
@@ -53,28 +58,23 @@ int main(int argc, char** argv){
     //CUDA computations
     // Declare empty matrices that will be used on the device to recieve
     // matrices from CPU (Md, Nd) and send back the computed matrix (Pd) to CPU
-    matrix Md(M.getNumberOfElementsInMatrix(), M.getNumberOfElementsInMatrix());
-    Md.initializeMatrixToZero();
-    matrix Nd(N.getNumberOfElementsInMatrix(), N.getNumberOfElementsInMatrix());
-    Nd.initializeMatrixToZero();
-    matrix Pd(P.getNumberOfElementsInMatrix(), P.getNumberOfElementsInMatrix());
-    Pd.initializeMatrixToZero();
+    double *Md, *Nd, *Pd;
 
-
-    uploadToDevice(M.getSizeInBytesOfMatrixElements(), M.getMatrixElements().data(), Md.getMatrixElements().data());
-    uploadToDevice(N.getSizeInBytesOfMatrixElements(), N.getMatrixElements().data(), Nd.getMatrixElements().data());
+    uploadToDevice(M.getSizeInBytesOfMatrixElements(), M.getMatrixElements().data(), &Md);
+    uploadToDevice(N.getSizeInBytesOfMatrixElements(), N.getMatrixElements().data(), &Nd);
+    uploadToDevice(P.getSizeInBytesOfMatrixElements(), P.getMatrixElements().data(), &Pd);
 
     gpuTimer.startClock();
 
-    matrixMultiplyOnDevice(Md.getMatrixElements().data(), Nd.getMatrixElements().data(), Pd.getMatrixElements().data(), Md.getNumberOfElementsInMatrix());
+    matrixMultiplyOnDevice(&Md, &Nd, &Pd, M.getNumberOfElementsInMatrix());
+
+
+    downloadToHost(P.getSizeInBytesOfMatrixElements(), Pd, P.getMatrixElements().data());
 
     gpuTimer.stopClock();
-
-    cudaDeviceSynchronize();
-
-    downloadToHost(P.getSizeInBytesOfMatrixElements(), Pd.getMatrixElements().data(), P.getMatrixElements().data());
-
     std::cout<<"The elapsed time for GPU computation is: "<<gpuTimer.elapsedTime()<<std::endl;
+
+    freeDeviceMemory(&Md, &Nd, &Pd);
     #endif
 
     return(0);
