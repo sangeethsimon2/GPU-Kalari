@@ -1,0 +1,9 @@
+Toy experiments to explore designing, implementing, performance analysis and tuning of 
+various types of scientific computing applications  for modern heterogeneous computing 
+platforms using various parallel libraries.
+
+To build the project, please copy the buildProject.sh into a build/ directory and execute
+source buildProject.sh
+
+The build executable would be available in bin/. To use it, type: 
+./matmul 1000 1000
