@@ -17,12 +17,32 @@ class StrategyB{
 
     public:
            //CTOR
-           StrategyB(){}
+           StrategyB(){
+              copyClassToDevice();
+           }
+            ~StrategyB(){
+            removeClassFromDevice();
+           }
 
            void updateSolution(std::vector<int>& _solution){
-            std::cout<<" Updating solution using Strategy B for dim "<<DIM<<"\n";
-            for (int& eachelement : _solution)
-                   eachelement+=3;
+              if (acc_on_device(acc_device_host))
+                  printf(" The kernel is on host\n");
+              else if (acc_on_device(acc_device_nvidia))
+                  printf(" The kernel is on device\n");
+              //printf(" Updating solution using Strategy B for dim=%d \n", DIM);
+
+              if (acc_on_device(acc_device_nvidia)){
+                 #pragma acc parallel loop
+                 for(int i = 0; i < _solution.size(); i++){
+                  _solution[i] +=3;
+                 }
+               }
            }
+           void copyClassToDevice(){
+            #pragma acc enter data copyin(this[0:1])
+          }
+          void removeClassFromDevice(){
+            #pragma acc exit data delete(this[0:1])
+         }
 };
 #endif
