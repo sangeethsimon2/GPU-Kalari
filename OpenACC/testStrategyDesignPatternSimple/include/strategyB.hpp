@@ -24,19 +24,18 @@ class StrategyB{
             removeClassFromDevice();
            }
 
+           //#pragma acc routine
            void updateSolution(std::vector<int>& _solution){
               if (acc_on_device(acc_device_host))
-                  printf(" The kernel is on host\n");
+                  printf(" The kernel is on host %d \n", acc_on_device(acc_device_host));
               else if (acc_on_device(acc_device_nvidia))
-                  printf(" The kernel is on device\n");
-              //printf(" Updating solution using Strategy B for dim=%d \n", DIM);
+                  printf(" The kernel is on device %d \n", acc_on_device(acc_device_nvidia));
+              printf(" Updating solution using Strategy B for dim=%d \n", DIM);
 
-              if (acc_on_device(acc_device_nvidia)){
-                 #pragma acc parallel loop
-                 for(int i = 0; i < _solution.size(); i++){
-                  _solution[i] +=3;
-                 }
-               }
+              #pragma acc loop
+              for(int i = 0; i < _solution.size(); i++){
+                _solution[i] +=3;
+              }
            }
            void copyClassToDevice(){
             #pragma acc enter data copyin(this[0:1])

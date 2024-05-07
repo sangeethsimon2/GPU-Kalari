@@ -17,8 +17,13 @@ class Kernel{
             copyClassToDevice();
          }
 
+        //#pragma acc routine
         void updateSolution(std::vector<int>& _solution){
+         //#pragma acc parallel
+             {
+             printf(" The host, device flags are %d, %d \n", acc_on_device(acc_device_host), acc_on_device(acc_device_nvidia));
             m_strategy->updateSolution(_solution);
+             }
          }
 
          //Copy to device method that copies :this

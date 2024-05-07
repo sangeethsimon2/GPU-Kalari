@@ -45,10 +45,17 @@ int main(){
         m_ptr2Jacobi2D = std::make_shared<Kernel<StrategyA<2>>>(std::make_shared<StrategyA<2>>());
         //Copy pointers and attach so that the subsequent call to updateSolution() can be made on device?
         #pragma acc enter data copyin(m_ptr2Jacobi2D[0:1])
+
+        //#pragma acc parallel
+        {
         m_ptr2Jacobi2D->updateSolution(vecOfInts);
+        }
         m_ptr2GaussSiedel2D = std::make_shared<Kernel<StrategyB<2>>>(std::make_shared<StrategyB<2>>());
         #pragma acc enter data copyin(m_ptr2GaussSiedel2D[0:1])
+        #pragma acc kernels
+        {
         m_ptr2GaussSiedel2D->updateSolution(vecOfInts);
+        }
     }
     else if (DIM==3) {
         m_ptr2Jacobi3D = std::make_shared<Kernel<StrategyA<3>>>(std::make_shared<StrategyA<3>>());
