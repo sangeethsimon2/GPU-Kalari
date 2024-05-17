@@ -1,0 +1,139 @@
+
+int main()
+{
+     auto m_ptr2BoundaryCreator2D = std::make_shared<BoundaryCreatorInterface<DirichletImpl<2>>>(5);
+     m_ptr2BoundaryCreator2D->updateBoundaries();
+}
+
+#include <cstdio>
+#include <memory>
+
+template<typename BoundaryConditionType>
+class BoundaryConditionTypeInterface;
+/* First instantiated from: insights.cpp:33 */
+#ifdef INSIGHTS_USE_TEMPLATE
+template<>
+class BoundaryConditionTypeInterface<DirichletImpl<2> >
+{
+
+  public:
+  inline void updateBoundaries(const int _Nx)
+  {
+    static_cast<DirichletImpl<2> *>(this)->updateBoundaries(_Nx);
+  }
+
+};
+
+#endif
+
+template<typename BoundaryConditionType>
+class BoundaryCreatorInterface
+{
+
+  public:
+  inline BoundaryCreatorInterface(int _Nx)
+  : m_Nx{_Nx}
+  {
+  }
+
+  inline void updateBoundaries()
+  {
+    printf("Call updateBoundaries in BoundaryCreator\n");
+    this->m_BCType->updateBoundaries(this->m_Nx);
+  }
+
+
+  protected:
+  BoundaryConditionTypeInterface<BoundaryConditionType> * m_BCType;
+  int m_Nx;
+};
+
+/* First instantiated from: insights.cpp:46 */
+#ifdef INSIGHTS_USE_TEMPLATE
+template<>
+class BoundaryCreatorInterface<DirichletImpl<2> >
+{
+
+  public:
+  inline BoundaryCreatorInterface(int _Nx)
+  : m_Nx{_Nx}
+  {
+  }
+
+  inline void updateBoundaries()
+  {
+    printf("Call updateBoundaries in BoundaryCreator\n");
+    this->m_BCType->updateBoundaries(this->m_Nx);
+  }
+
+
+  protected:
+  BoundaryConditionTypeInterface<DirichletImpl<2> > * m_BCType;
+  int m_Nx;
+  public:
+};
+
+#endif
+
+template<typename BoundaryConditionType>
+class BoundaryConditionTypeInterface
+{
+
+  public:
+  inline void updateBoundaries(const int _Nx)
+  {
+    static_cast<BoundaryConditionType *>(this)->updateBoundaries(_Nx);
+  }
+
+};
+
+/* First instantiated from: insights.cpp:33 */
+#ifdef INSIGHTS_USE_TEMPLATE
+template<>
+class BoundaryConditionTypeInterface<DirichletImpl<2> >
+{
+
+  public:
+  inline void updateBoundaries(const int _Nx)
+  {
+    static_cast<DirichletImpl<2> *>(this)->updateBoundaries(_Nx);
+  }
+
+};
+
+#endif
+
+template<int DIM>
+class DirichletImpl : public BoundaryConditionTypeInterface<DirichletImpl<DIM> >
+{
+
+  public:
+  inline void updateBoundaries(const int _Nx)
+  {
+    printf("Call updateBoundaries in DirichletImpl\n");
+  }
+
+};
+
+/* First instantiated from: shared_ptr_base.h:1742 */
+#ifdef INSIGHTS_USE_TEMPLATE
+template<>
+class DirichletImpl<2> : public BoundaryConditionTypeInterface<DirichletImpl<2> >
+{
+
+  public:
+  inline void updateBoundaries(const int _Nx)
+  {
+    printf("Call updateBoundaries in DirichletImpl\n");
+  }
+
+};
+
+#endif
+
+int main()
+{
+  std::shared_ptr<BoundaryCreatorInterface<DirichletImpl<2> > > m_ptr2BoundaryCreator2D = std::make_shared<BoundaryCreatorInterface<DirichletImpl<2> > >(5);
+  static_cast<const std::__shared_ptr_access<BoundaryCreatorInterface<DirichletImpl<2> >, 2, false, false>&>(m_ptr2BoundaryCreator2D).operator->()->updateBoundaries();
+  return 0;
+}
