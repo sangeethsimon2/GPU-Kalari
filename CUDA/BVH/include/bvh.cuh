@@ -1,0 +1,1 @@
+__global__ void computeAABBs(const int num_rects);
