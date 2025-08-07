@@ -1,1 +1,0 @@
-void computeTree(int num_rects, int blocksPerGrid, int threadsPerBlock);

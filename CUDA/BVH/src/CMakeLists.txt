@@ -1,5 +1,9 @@
 include(CMakePrintHelpers)
 message(PROJECT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
-add_executable(bvh_app main.cpp bvh.cu)
+add_executable(bvh_app 
+main.cpp 
+AABB.cpp
+bvh.cu
+)
 target_include_directories(bvh_app PUBLIC "${PROJECT_SOURCE_DIR}/include")
 set_target_properties(bvh_app PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
