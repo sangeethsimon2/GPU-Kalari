@@ -16,7 +16,7 @@ struct rectangleObject{
      rectangleObject(float _originX, float _originY, float _width, float _height):
         originX(_originX), originY(_originY), width(_width), height(_height) {}
 };
-
+// Enum class of types of supported objects
 enum class objType{
     RECTANGLE = 0
 };
@@ -35,4 +35,4 @@ void testdownloadToHost(rectangleObject*, const size_t);
 //downloadFromDevice();
 
 // Function to compute the tree
-void computeTree(size_t num_rects, int blocksPerGrid, int threadsPerBlock);
+void computeTree(const size_t, int, int);
