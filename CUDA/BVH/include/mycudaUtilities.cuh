@@ -2,8 +2,8 @@
 #include "AABB.h"
 
 
-//TODO: remove dependency on rectangleObject in all APIs
 namespace util{
+    //Error related APIS
     #define checkCudaErrors(val) check_cuda_error((val), #val, __FILE__, __LINE__)
     void check_cuda_error(cudaError_t result, const char *const func, const char *const file, int const line){
        if(result!=cudaSuccess){
@@ -11,46 +11,37 @@ namespace util{
         exit(EXIT_FAILURE);
         }    
     }
-    
-    void my_cudamalloc(rectangleObject** d_rects, const size_t numObj){
-        checkCudaErrors(cudaMalloc((void**)d_rects, numObj * sizeof(rectangleObject)));
+    //Memory related APIS    
+    template<typename T>
+    void my_cudamallocT(T** _deviceResource, const size_t _resourceCount, const size_t _resourceSize){
+        checkCudaErrors(cudaMalloc((void**)_deviceResource, _resourceCount * _resourceSize));
     }
 
-    void my_cudaMemcpy(rectangleObject* dest, rectangleObject* src, size_t size, cudaMemcpyKind copyType){
-       checkCudaErrors(cudaMemcpy(dest, src, size, copyType)); 
+    template<typename T>
+    void my_cudaMemcpyT(T* _destination, T* _source, const size_t _resourceSize, cudaMemcpyKind _copyType){
+        checkCudaErrors(cudaMemcpy(_destination, _source, _resourceSize, _copyType));
     }
 
+    template<typename T>
+    void my_cudafreeT(T* _deviceResource){
+        checkCudaErrors(cudaFree(_deviceResource));
+    }
+
+    // Connecter functions between C++ & CUDA APIS
     void my_uploadToDevice(rectangleObject** d_rects, rectangleObject* h_rects, const size_t numObj){
-        my_cudamalloc(d_rects, numObj); 
+        my_cudamallocT(d_rects, numObj, sizeof(rectangleObject)); 
         std::cout<<"Allocated memory\n";
-        my_cudaMemcpy( *d_rects, h_rects, numObj * sizeof(rectangleObject), cudaMemcpyHostToDevice);
+        my_cudaMemcpyT( *d_rects, h_rects, numObj * sizeof(rectangleObject), cudaMemcpyHostToDevice);
         std::cout<<"Finished uploading memory from host to device\n";
     }
-
-
-    /*
-    void uploadToDevice(const size_t size, const double* src, double** dst){
-    gpuErrCheck(cudaMalloc((void**)dst, size));
-    std::cout<<"Allocated memory\n";
-    gpuErrCheck(cudaMemcpy(*dst, src, size, cudaMemcpyHostToDevice));
-    std::cout<<"Finished uploading memory from host to device\n";
-    };
-    */
-    
-    //TODO: remove dependency on rectangleObject
-    void my_cudafree(rectangleObject *src){
-        checkCudaErrors( cudaFree(src));
-    }
-
+   
     void my_testDownloadToHost(rectangleObject* h_rects, rectangleObject* d_rects, const size_t numObjs){ 
         if(h_rects != NULL && d_rects != NULL){
-            my_cudaMemcpy( h_rects, d_rects, numObjs * sizeof(rectangleObject), cudaMemcpyDeviceToHost);
+            my_cudaMemcpyT( h_rects, d_rects, numObjs * sizeof(rectangleObject), cudaMemcpyDeviceToHost);
             std::cout<<"Finished downloading memory from device to host\n";
         }
-        my_cudafree(d_rects);
+        my_cudafreeT(d_rects);
         std::cout<<"Deallocated memory\n";
     }
-
-
     
 }
