@@ -1,2 +1,4 @@
+#include "AABB.h"
 
-__global__ void computeAABBs(const size_t );
+template<typename T>
+__global__ void computeAABBs( T*,  const size_t );
