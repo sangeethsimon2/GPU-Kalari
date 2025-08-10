@@ -20,11 +20,30 @@ void testdownloadToHost(T* h_rects, const size_t numObjs){
 }
 
 template<typename T>
-__global__ void computeAABBs(T* d_rects, const size_t numObjs, AABB* d_aabbs){
+__global__ void computeAABBs(T* d_objs, const size_t numObjs, AABB* d_aabbs){
      int idx = blockIdx.x * blockDim.x + threadIdx.x;
+     AABB m_aabbOfEachObject; 
      if(idx < numObjs){
-        d_rects[idx].originX=0.;
-     }
+        T m_eachObj = d_objs[idx];
+/*
+        <--  width  -->
+        --------------- ^
+        |             | |
+        |             | | height
+        |             | |
+        X-------------- v
+(originX, originY)
+*/
+        m_aabbOfEachObject.minX = m_eachObj.originX;
+        m_aabbOfEachObject.minY = m_eachObj.originY;
+        
+        m_aabbOfEachObject.maxX = m_eachObj.originX + m_eachObj.width;
+        m_aabbOfEachObject.maxY = m_eachObj.originY + m_eachObj.height;
+ 
+        d_aabbs[idx] = m_aabbOfEachObject;
+    }
+
+
 }
 void computeTree(size_t numObjs, int blocksPerGrid, int threadsPerBlock){
     util::allocateMemoryOndevice(d_aabbs, numObjs, sizeof(AABB));
