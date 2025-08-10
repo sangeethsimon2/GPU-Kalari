@@ -25,11 +25,13 @@ enum class objType{
 std::vector<rectangleObject> createObjOnScreen(const size_t, const objType);
 
 
-//Function to allocate memory and copy objects to device 
-void uploadTodevice(rectangleObject*, const size_t);
+//Function to allocate memory and copy objects to device
+template<typename T> 
+void uploadTodevice(T*, const size_t);
 
 //test Function to download objects from device and deallocate memory 
-void testdownloadToHost(rectangleObject*, const size_t);
+template<typename T>
+void testdownloadToHost(T*, const size_t);
 
 //Function to download objects from device and deallocate memory 
 //downloadFromDevice();

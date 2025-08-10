@@ -14,7 +14,8 @@ void uploadTodevice(T* h_rects, const size_t numObj){
     util::my_uploadToDevice(&d_rects, h_rects, numObj);  // This could be error prone when T! typeof d_rects 
 }
 
-void testdownloadToHost(rectangleObject* h_rects, const size_t numObjs){
+template<typename T>
+void testdownloadToHost(T* h_rects, const size_t numObjs){
     util::my_testDownloadToHost(h_rects, d_rects, numObjs);
 }
 
@@ -31,3 +32,6 @@ void computeTree(size_t numObjs, int blocksPerGrid, int threadsPerBlock){
 }
 
 
+//Expliciit instantiations
+template void uploadTodevice<rectangleObject>(rectangleObject*, const size_t);
+template void testdownloadToHost<rectangleObject>(rectangleObject*, const size_t);
