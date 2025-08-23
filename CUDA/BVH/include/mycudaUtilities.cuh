@@ -62,5 +62,13 @@ namespace util{
         std::cout<<"Deallocated memory\n";
     }
     
-    
+   template <typename T> 
+   void my_downloadToHost(T* h_objs, T* d_objs, const size_t numObjs){
+        if(h_objs != nullptr && d_objs != nullptr){
+            my_cudaMemcpyT(h_objs, d_objs, numObjs * sizeof(T), cudaMemcpyDeviceToHost);
+            std::cout<<"Finished downloading memory from device to host\n";
+        }
+        my_cudafree(d_objs);
+        std::cout<<"Deallocated memory\n";
+   } 
 }
