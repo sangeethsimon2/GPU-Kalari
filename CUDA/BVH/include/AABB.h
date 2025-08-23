@@ -5,16 +5,18 @@
 
 //Type that stores the AABB for each object 
 struct AABB{
-     float minX; float minY;
-     float maxX; float maxY;
+     float minX; float maxX;
+     float minY; float maxY;
+     float minZ; float maxZ;
+     float centroidX, centroidY, centroidZ;
 };
 
 //Type of rectangle object 
 struct rectangleObject{
-     float originX; float originY;
-     float width; float height;
+     float originX; float originY; float originZ;
+     float width; float height; float depth;
      rectangleObject(float _originX, float _originY, float _width, float _height):
-        originX(_originX), originY(_originY), width(_width), height(_height) {}
+        originX(_originX), originY(_originY), originZ(0.), width(_width), height(_height), depth(0.) {}
 };
 // Enum class of types of supported objects
 enum class objType{
