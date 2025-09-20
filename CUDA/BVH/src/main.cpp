@@ -14,6 +14,9 @@ int main() {
     std::vector<rectangleObject> returnedRects; 
     returnedRects.reserve(numObjs);
 
+    std::vector<AABB> returnedAABBs;
+    returnedAABBs.reserve(numObjs);
+
     //Copy data to device
     uploadTodevice(rects.data(), numObjs); 
   
@@ -26,7 +29,8 @@ int main() {
     
     //Copy back from device to host'
     testdownloadToHost(returnedRects.data(), numObjs); 
- 
+
+   // downloadToHost(returnedAABBs.data(), numObjs);
 
     return 0;
 }

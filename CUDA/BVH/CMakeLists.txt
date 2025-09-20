@@ -19,7 +19,7 @@ option(ENABLE_CUDA "ENABLE_CUDA" ON)
 if (ENABLE_CUDA)
 #find_package(CUDAToolkit REQUIRED)
 #include_directories(${CUDAToolkit_INCLUDE_DIRS})
-  set(CMAKE_CUDA_ARCHITECTURES "70;72")
+  set(CMAKE_CUDA_ARCHITECTURES "70;72;86")
   set(CMAKE_CUDA_STANDARD 17)
 endif()
 
