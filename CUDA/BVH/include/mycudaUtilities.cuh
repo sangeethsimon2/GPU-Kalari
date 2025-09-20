@@ -1,5 +1,8 @@
+#pragma once 
+
 #include <iostream>
 #include "AABB.h"
+#include "bvh.cuh"
 
 
 namespace util{
@@ -31,14 +34,14 @@ namespace util{
     
     //Create memory only 
     template<typename T>
-    void allocateMemoryOndevice(T*_deviceResource, const size_t _resourceCount, const size_t _unitResourceSize){
+    void allocateMemoryOndevice(T*& _deviceResource, const size_t _resourceCount, const size_t _unitResourceSize){
         my_cudamallocT(&_deviceResource, _resourceCount, sizeof(T));
         std::cout<<"Allocated memory\n";
     } 
 
     //Deallocate memory only 
     template<typename T>
-    void deallocateMemoryFromdevice(T* _deviceResource){
+    void deallocateMemoryFromdevice(T*& _deviceResource){
         my_cudafreeT(_deviceResource);
         std::cout<<"Deallocated memory\n";
     }
