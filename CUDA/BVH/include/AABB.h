@@ -8,22 +8,9 @@ struct AABB{
      float minX; float maxX;
      float minY; float maxY;
      float minZ; float maxZ;
-     //float centroidX, centroidY, centroidZ;
+     float centroidX{0.}; float centroidY{0.}; float centroidZ{0.};
 };
 
-/*
-struct CentroidX{
-     float centroidX=-1.;
-};
-
-struct CentroidY{
-     float centroidY=-1.;
-};
-
-struct CentroidZ{
-     float centroidZ=-1.;
-};
-*/
 //Type of rectangle object 
 struct rectangleObject{
      float originX; float originY; float originZ;

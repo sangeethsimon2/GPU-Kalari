@@ -9,25 +9,34 @@
 template<typename T>
 __global__ void computeAABBs( T*,  const size_t );
 
+struct leftBottomBoundCoordinates{
+     float x{0.}; float y{0.}; float z{0.};
+};
+
+struct rightTopBoundCoordinates{
+     float x{0.}; float y{0.}; float z{0.};
+};
 
 struct CentroidX{
-     float centroidX=-1.;
+     float value=-1000.;
+     uint32_t mortonCode = 0;
 
      __host__ __device__
-     bool operator < (const CentroidX& other)const {return this->centroidX< other.centroidX;}
+     bool operator < (const CentroidX& other)const {return this->value< other.value;}
 };
 
 struct CentroidY{
-     float centroidY=-1.;
-    
+     float  value=-1000.;
+     uint32_t mortonCode = 0;
      __host__ __device__
-     bool operator < (const CentroidY& other)const {return this->centroidY< other.centroidY;}
+     bool operator < (const CentroidY& other)const {return this->value< other.value;}
 };
 
 
 struct CentroidZ{
-     float centroidZ=-1.;
+     float value=-1000.;
+     uint32_t mortonCode = 0;
     
      __host__ __device__
-     bool operator < (const CentroidZ& other)const {return this->centroidZ< other.centroidZ;}
+     bool operator < (const CentroidZ& other)const {return this->value< other.value;}
 };
