@@ -1,0 +1,69 @@
+- normalized centroid computed - finished
+- create the morton code for each point 
+- parallel radix sort 
+- sort the morton codes (parallel radix sort)
+- Facilitate for 64 bit morton code instead of the current 32 bit
+
+
+What is the story so far:
+-------------------------
+In main.cpp:
+------------
+- We start with 10 rectangle objects. These objects have origin and dimensions. Defined in AABB.h
+- These rectangle objs are created in createObjectsOnScreen() 
+- We also construct and reserve space for AABB obj  
+- We call uploadToDevice() on the rectangle objects. This is a templated method (over the asset to be copied)
+  and calls util::my_uploadToDevice() underneath to copy the actual asset to GPU global mem. The device_ptr for
+  these assets (available directly from bvh.cu) is passed along with the host_ptr for the copy. 
+- Kernel launch parameters are declared which incldues threadsPerBlock and blocksPerGrid. Heuristic for now. 
+- computeTree(numObjs, threadsPerBlock, blocksPerGrid) is called which is implemented in bvh.cu 
+  - allocates memory for leftBottomBoundCoordinates, rightTopBoundCoordinates and centroids (x,y,z) of the AABB
+  - call kernel to compute these on the device : 
+     computeMinMaxBoundsAndCentroids<<<blocksPerGrid, threadsPerBlock>>>(...);
+  - Do a device_ptr_cast of the centroid ptrs into Thrust pointer type so that thrust's minmax api can be called  
+    auto td_centroidX = thrust::device_pointer_cast<CentroidX>(d_centroidX);
+  - auto minmaxX = thrust::minmax_element(td_centroidX, td_centroidX+numObjs);
+  - Launch kernel to compute scaled centroids ([0,1]). Scaled centroids are necessary to compute morton codes from. 
+    computeScaledCentroids<<<blocksPerGrid, threadsPerBlock>>>(...);
+    - Once the centroids are computed, its morton code is computed immediately by calling the 
+      computeMortonCode3D(float _centroidX, float _centroidY, float _centroidZ). This method 
+      This method has a expandBits() method. 
+
+AABB.h defines
+-------------- 
+- Rectangle object 
+- ObjTypes (now only rectangle, but could be extended)
+- Method createObjectsOnScreen() to create and return them as a vector
+- AABB object. This has min-max bounds and centroid information
+
+
+bvh.cu defines 
+--------------
+- Device memory for the following assets are defined here:
+    - rectangleObject* d_rects;
+    - AABB* d_aabbs;
+
+- template<T>uploadToDevice(T* , size) method as an interface to upload an asset to the GPU. It forwards the call to 
+  util::my_uploadToDevice() to do the actual job. calls 
+    - my_cudamallocT(d_rects, numObj, sizeof(T)); 
+    - my_cudaMemcpyT( *d_rects, h_rects, numObj * sizeof(T), cudaMemcpyHostToDevice);
+- Implements the computeTree() method 
+    - Allocates memory on device for storing an array of the following values (each entry corresponds to each object) 
+        - leftBottomBoundCoordinates & rightTopBoundCoordinates 
+        - CentroidX, CentroidY & CentroidZ
+    -   
+
+mycudaUtilities.cuh 
+-------------------
+- Defines much of the actual cuda api calls 
+
+- my_cudamallocT(d_rects, numObj, sizeof(T)) : interface to the cudamalloc and cudaerrorcheck. It looks like:  
+    ```
+    void my_cudamallocT(T** _deviceResource, const size_t _resourceCount, const size_t _unitResourceSize){
+        checkCudaErrors(cudaMalloc((void**)_deviceResource, _resourceCount * _unitResourceSize));
+    }```
+
+- template<typename T>
+    void allocateMemoryOndevice(T*& _deviceResource, const size_t _resourceCount, const size_t _unitResourceSize){
+    - calls the my_cudamallocT to allocate any given resource  
+
