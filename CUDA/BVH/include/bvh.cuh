@@ -1,5 +1,6 @@
 #pragma once 
 
+#include <cuda_runtime.h>
 #include "AABB.h"
 #include <thrust/version.h>
 #include <thrust/device_vector.h>
@@ -40,3 +41,5 @@ struct CentroidZ{
      __host__ __device__
      bool operator < (const CentroidZ& other)const {return this->value< other.value;}
 };
+
+unsigned int* h_mortonCodeArrayForPrimitives;
