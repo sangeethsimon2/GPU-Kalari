@@ -1,7 +1,7 @@
 include(CMakePrintHelpers)
 message(PROJECT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 add_executable(bvh_app 
-main.cpp 
+main.cu 
 AABB.cpp
 bvh.cu
 )
