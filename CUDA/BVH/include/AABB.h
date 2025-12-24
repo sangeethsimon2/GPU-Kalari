@@ -2,6 +2,7 @@
 
 #include<iostream>
 #include<vector>
+//#include "smartBuffer.cuh"
 
 //Type that stores the AABB for each object 
 struct AABB{
@@ -36,7 +37,6 @@ template<typename T>
 void testdownloadToHost(T*, const size_t);
 
 //Function to download objects from device and deallocate memory 
-//downloadFromDevice();
+//template<typename T>
+//void downloadToHost(T*, const size_t);
 
-// Function to compute the tree
-void computeTree(const size_t, int, int);

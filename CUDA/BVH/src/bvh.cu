@@ -179,8 +179,11 @@ __global__ void computeScaledCentroids(CentroidX* d_centroidX,
     }
 }
 
-void computeTree(size_t numObjs, int blocksPerGrid, int threadsPerBlock){
+void computeTree( SmartMemoryManager::HostDeviceMemoryManager<rectangleObject> rect_smartBuffer,
+    const int blocksPerGrid, const int threadsPerBlock){
     
+    const size_t numObjs = rect_smartBuffer.getSize();
+
     /* Memory allocations*/
     util::allocateMemoryOndevice(d_minCoord, numObjs, sizeof(leftBottomBoundCoordinates));
     util::allocateMemoryOndevice(d_maxCoord, numObjs, sizeof(rightTopBoundCoordinates));
@@ -190,7 +193,7 @@ void computeTree(size_t numObjs, int blocksPerGrid, int threadsPerBlock){
    
     util::allocateMemoryOndevice(d_mortonCodeArrayForPrimitives, numObjs, sizeof(uint32_t));
 
-    computeMinMaxBoundsAndCentroids<<<blocksPerGrid, threadsPerBlock>>>(d_rects, d_minCoord, d_maxCoord, 
+    computeMinMaxBoundsAndCentroids<<<blocksPerGrid, threadsPerBlock>>>(rect_smartBuffer.getDevicePointer(), d_minCoord, d_maxCoord, 
         d_centroidX, d_centroidY, d_centroidZ, numObjs);
 
     //TO be investigated whether this is done natively on GPU following the computeAABB kernel 

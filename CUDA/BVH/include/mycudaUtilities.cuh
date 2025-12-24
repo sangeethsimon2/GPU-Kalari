@@ -2,13 +2,14 @@
 
 #include <iostream>
 #include "AABB.h"
-#include "bvh.cuh"
+#include <cuda_runtime.h>
+//#include "bvh.cuh"
 
 
 namespace util{
     //Error related APIS
     #define checkCudaErrors(val) check_cuda_error((val), #val, __FILE__, __LINE__)
-    void check_cuda_error(cudaError_t result, const char *const func, const char *const file, int const line){
+    inline void check_cuda_error(cudaError_t result, const char *const func, const char *const file, int const line){
        if(result!=cudaSuccess){
         std::cerr<<"CUDA error at "<<file<<":"<<line<<" with code="<<result<<" (" << cudaGetErrorString(result) << ") \"" << func << "\"" << std::endl;
         exit(EXIT_FAILURE);
@@ -28,6 +29,7 @@ namespace util{
     template<typename T>
     void my_cudafreeT(T* _deviceResource){
         checkCudaErrors(cudaFree(_deviceResource));
+        _deviceResource = nullptr;
     }
 
     // Connecter functions between C++ & CUDA APIS
@@ -56,7 +58,7 @@ namespace util{
     }
    
     //test download
-    void my_testDownloadToHost(rectangleObject* h_rects, rectangleObject* d_rects, const size_t numObjs){ 
+    inline void my_testDownloadToHost(rectangleObject* h_rects, rectangleObject* d_rects, const size_t numObjs){ 
         if(h_rects != NULL && d_rects != NULL){
             my_cudaMemcpyT( h_rects, d_rects, numObjs * sizeof(rectangleObject), cudaMemcpyDeviceToHost);
             std::cout<<"Finished downloading memory from device to host\n";
@@ -71,7 +73,7 @@ namespace util{
             my_cudaMemcpyT(h_objs, d_objs, numObjs * sizeof(T), cudaMemcpyDeviceToHost);
             std::cout<<"Finished downloading memory from device to host\n";
         }
-        my_cudafree(d_objs);
+        my_cudafreeT(d_objs);
         std::cout<<"Deallocated memory\n";
    } 
 }

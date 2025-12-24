@@ -2,6 +2,8 @@
 
 #include <cuda_runtime.h>
 #include "AABB.h"
+#include "smartBuffer.cuh"
+
 #include <thrust/version.h>
 #include <thrust/device_vector.h>
 #include <thrust/execution_policy.h>
@@ -42,4 +44,7 @@ struct CentroidZ{
      bool operator < (const CentroidZ& other)const {return this->value< other.value;}
 };
 
-unsigned int* h_mortonCodeArrayForPrimitives;
+inline unsigned int* h_mortonCodeArrayForPrimitives;
+
+// Function to compute the tree
+void computeTree(SmartMemoryManager::HostDeviceMemoryManager<rectangleObject>, const int, const int);
